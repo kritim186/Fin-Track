@@ -4,75 +4,84 @@ import { useEffect, useState } from 'react';
 import { Transaction } from './transactions.types';
 
 const API_BASE = 'http://localhost:4000/api/transactions';
+const LOCAL_STORAGE_KEY = 'fintrack_transactions';
+
+const DEFAULT_TRANSACTIONS: Transaction[] = [];
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // GET all
   async function fetchTransactions() {
     try {
       setLoading(true);
+      setError(null);
       const res = await fetch(API_BASE);
-      if (!res.ok) throw new Error('Failed to fetch transactions');
-      const data = await res.json();
-      setTransactions(data);
+      if (res.ok) {
+        const data = await res.json();
+        setTransactions(data);
+        setLoading(false);
+        return;
+      }
     } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
+      // Backend not reached, gracefully fall back
     }
+
+    // Graceful fallback to LocalStorage
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) {
+      setTransactions(JSON.parse(stored));
+    } else {
+      setTransactions(DEFAULT_TRANSACTIONS);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_TRANSACTIONS));
+    }
+    setLoading(false);
   }
 
   // CREATE
   async function addTransaction(txn: Transaction) {
+    const updated = [txn, ...transactions];
+    setTransactions(updated);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+
     try {
-      const res = await fetch(API_BASE, {
+      await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(txn),
       });
-      if (!res.ok) throw new Error('Failed to add transaction');
-      const created = await res.json();
-      setTransactions(prev => [created, ...prev]);
-    } catch (err) {
-      setError((err as Error).message);
-    }
+    } catch (err) {}
   }
 
   // UPDATE
   async function updateTransaction(txn: Transaction) {
+    const updated = transactions.map(t => (t.id === txn.id ? txn : t));
+    setTransactions(updated);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+
     try {
-      const res = await fetch(`${API_BASE}/${txn.id}`, {
+      await fetch(`${API_BASE}/${txn.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(txn),
       });
-      if (!res.ok) throw new Error('Failed to update transaction');
-      const updated = await res.json();
-      setTransactions(prev =>
-        prev.map(t => (t.id === updated.id ? updated : t))
-      );
-    } catch (err) {
-      setError((err as Error).message);
-    }
+    } catch (err) {}
   }
 
   // DELETE
   async function removeTransaction(id: string) {
+    const updated = transactions.filter(t => t.id !== id);
+    setTransactions(updated);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+
     try {
-      const res = await fetch(`${API_BASE}/${id}`, {
+      await fetch(`${API_BASE}/${id}`, {
         method: 'DELETE',
       });
-      if (!res.ok) throw new Error('Failed to delete transaction');
-      setTransactions(prev => prev.filter(t => t.id !== id));
-    } catch (err) {
-      setError((err as Error).message);
-    }
+    } catch (err) {}
   }
 
-  // Initial load
   useEffect(() => {
     fetchTransactions();
   }, []);

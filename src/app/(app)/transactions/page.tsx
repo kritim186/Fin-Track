@@ -8,6 +8,7 @@ import TransactionsTable from '@/components/transactions/TransactionsTable';
 import AddTransactionForm from '@/components/transactions/AddTransactionForm';
 import { useTransactions } from '@/features/transactions/useTransactions';
 import { Transaction } from '@/features/transactions/transactions.types';
+import { Plus } from 'lucide-react';
 
 export default function TransactionsPage() {
   const {
@@ -33,7 +34,7 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       <PageHeader
         title="Transactions"
         subtitle="Track all your income and expenses"
@@ -43,8 +44,9 @@ export default function TransactionsPage() {
               setEditingTxn(null);
               setIsOpen(true);
             }}
-            className="rounded-md bg-black px-4 py-2 text-sm text-white"
+            className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-all active:scale-95"
           >
+            <Plus className="w-4 h-4" />
             Add Transaction
           </button>
         }
@@ -52,13 +54,18 @@ export default function TransactionsPage() {
 
       {/* Loading */}
       {loading && (
-        <div className="text-sm text-gray-500">Loading transactions...</div>
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="text-sm text-red-600">
-          Error loading transactions: {error}
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-rose-800">Error loading transactions</h3>
+          <div className="mt-2 text-sm text-rose-700">
+            <p>{error}</p>
+          </div>
         </div>
       )}
 
