@@ -67,8 +67,7 @@ export default function SpendingBreakdownChart({ data }: { data: BreakdownItem[]
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              activeIndex={activeIndex}
-              activeShape={renderActiveShape}
+              {...({ activeIndex, activeShape: renderActiveShape } as any)}
               data={data}
               cx="50%"
               cy="50%"

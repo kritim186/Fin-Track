@@ -19,18 +19,27 @@ type CashFlowItem = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-4 rounded-xl shadow-xl border border-gray-100 ring-1 ring-black/5 min-w-[160px]">
-        <p className="font-bold text-gray-400 uppercase tracking-widest text-xs mb-3">{label}</p>
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 ring-1 ring-black/5 min-w-[160px]">
+        <p className="font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-xs mb-3">{label}</p>
         <div className="space-y-2">
-          {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex items-center justify-between gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                <span className="text-sm font-semibold capitalize text-gray-700">{entry.name}</span>
-              </div>
-              <span className="text-sm font-bold text-gray-900">₹{entry.value.toLocaleString()}</span>
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Income</span>
             </div>
-          ))}
+            <span className="text-sm font-bold text-gray-900 dark:text-white">
+              ₹{(payload[0]?.payload?.income || 0).toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-rose-500" />
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Expense</span>
+            </div>
+            <span className="text-sm font-bold text-gray-900 dark:text-white">
+              ₹{(payload[0]?.payload?.expense || 0).toLocaleString()}
+            </span>
+          </div>
         </div>
       </div>
     );

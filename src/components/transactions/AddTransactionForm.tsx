@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Transaction } from '@/features/transactions/transactions.types';
 import { IndianRupee, Type, Tag, Calendar, LogInIcon, LogOutIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 type FormState = {
   date: string;
@@ -64,6 +65,7 @@ export default function AddTransactionForm({
       type: form.type,
     });
 
+    toast.success(initialData ? 'Transaction updated successfully!' : 'Transaction added successfully!');
     setIsSubmitting(false);
   }
 
@@ -78,24 +80,24 @@ export default function AddTransactionForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="border-b border-gray-100 pb-4">
-        <h3 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
           {initialData ? 'Edit Transaction' : 'Add New Transaction'}
         </h3>
-        <p className="mt-1.5 text-sm text-gray-500 font-medium">
+        <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400 font-medium">
           {initialData ? 'Update your transaction details below.' : 'Fill in the details for your new transaction.'}
         </p>
       </div>
 
       <div className="space-y-5">
         {/* Type Selection Tabs */}
-        <div className="flex rounded-lg p-1 bg-gray-100/80 ring-1 ring-inset ring-gray-200/50 mb-6">
+        <div className="flex rounded-lg p-1 bg-gray-100/80 dark:bg-gray-800/50 ring-1 ring-inset ring-gray-200/50 dark:ring-gray-700 mb-6">
           <button
             type="button"
             onClick={() => updateField('type', 'expense')}
             className={`flex-1 flex justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${
               form.type === 'expense'
-                ? 'bg-white text-rose-600 shadow-sm ring-1 ring-gray-200'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-700 text-rose-600 dark:text-rose-400 shadow-sm ring-1 ring-gray-200 dark:ring-gray-600'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
             }`}
           >
             <LogOutIcon className="w-4 h-4" /> Expense
@@ -105,8 +107,8 @@ export default function AddTransactionForm({
             onClick={() => updateField('type', 'income')}
             className={`flex-1 flex justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${
               form.type === 'income'
-                ? 'bg-white text-emerald-600 shadow-sm ring-1 ring-gray-200'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-700 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-gray-200 dark:ring-gray-600'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
             }`}
           >
             <LogInIcon className="w-4 h-4" /> Income
@@ -116,10 +118,10 @@ export default function AddTransactionForm({
         {/* Date and Amount Row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700 flex items-center gap-1.5"><Calendar className="w-4 h-4 text-gray-400" /> Date</label>
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5"><Calendar className="w-4 h-4 text-gray-400" /> Date</label>
             <input
               type="date"
-              className="w-full rounded-lg border border-gray-300 py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
               value={form.date}
               onChange={e => updateField('date', e.target.value)}
             />
@@ -127,13 +129,13 @@ export default function AddTransactionForm({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700 flex items-center gap-1.5"><IndianRupee className="w-4 h-4 text-gray-400" /> Amount</label>
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5"><IndianRupee className="w-4 h-4 text-gray-400" /> Amount</label>
             <div className="relative flex items-center">
-              <span className="pointer-events-none absolute left-3.5 text-gray-500 font-medium pb-[1px]">₹</span>
+              <span className="pointer-events-none absolute left-3.5 text-gray-500 dark:text-gray-400 font-medium pb-[1px]">₹</span>
               <input
                 type="number"
                 placeholder="0.00"
-                className="w-full rounded-lg border border-gray-300 py-2.5 pl-8 pr-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white py-2.5 pl-8 pr-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
                 value={form.amount}
                 onChange={e => updateField('amount', e.target.value)}
               />
@@ -144,10 +146,10 @@ export default function AddTransactionForm({
 
         {/* Description */}
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-gray-700 flex items-center gap-1.5"><Type className="w-4 h-4 text-gray-400" /> Description</label>
+          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5"><Type className="w-4 h-4 text-gray-400" /> Description</label>
           <input
             placeholder="e.g. Weekly Groceries"
-            className="w-full rounded-lg border border-gray-300 py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
             value={form.description}
             onChange={e => updateField('description', e.target.value)}
           />
@@ -156,10 +158,10 @@ export default function AddTransactionForm({
 
         {/* Category */}
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-gray-700 flex items-center gap-1.5"><Tag className="w-4 h-4 text-gray-400" /> Category</label>
+          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5"><Tag className="w-4 h-4 text-gray-400" /> Category</label>
           <input
             placeholder="e.g. Food, Utilities, Salary"
-            className="w-full rounded-lg border border-gray-300 py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors mb-2"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white py-2.5 px-3.5 text-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors mb-2"
             value={form.category}
             onChange={e => updateField('category', e.target.value)}
           />
@@ -173,8 +175,8 @@ export default function AddTransactionForm({
           disabled={isSubmitting}
           className={`w-full flex justify-center py-3 px-4 rounded-xl shadow-sm text-sm font-bold text-white transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${
             isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed hidden'
-              : 'bg-black hover:bg-gray-900 hover:shadow-md'
+              ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed hidden'
+              : 'bg-black dark:bg-white dark:text-black dark:hover:bg-gray-100 hover:bg-gray-900 hover:shadow-md'
           }`}
         >
           {isSubmitting

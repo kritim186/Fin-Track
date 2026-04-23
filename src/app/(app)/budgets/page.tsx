@@ -9,6 +9,22 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { useBudgets, Budget } from '@/features/budgets/useBudgets';
 import { useTransactions } from '@/features/transactions/useTransactions';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  show: { opacity: 1, scale: 1, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } }
+};
 
 export default function BudgetsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,7 +79,12 @@ export default function BudgetsPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {budgets.map((budget) => {
           const spent = transactions
             .filter(t => t.type === 'expense' && t.category.toLowerCase() === budget.name.toLowerCase())
@@ -92,7 +113,8 @@ export default function BudgetsPage() {
           const IconComponent = (Icons as any)[budget.icon] || Icons.HelpCircle;
 
           return (
-            <Card key={budget.id}>
+            <motion.div variants={itemVariants} key={budget.id}>
+              <Card>
               {/* Card Header w/ Edit Controls */}
               <div className="flex items-center justify-between mb-6 group">
                 <div className="flex items-center gap-3">
@@ -156,9 +178,10 @@ export default function BudgetsPage() {
                 </span>
               </div>
             </Card>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <AddBudgetForm initialData={editingBudget ?? undefined} onSubmit={handleSaveBudget} />
